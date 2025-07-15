@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.0 (2025-07-15)
+
+Full Changelog: [v1.0.0...v1.1.0](https://github.com/Jaiaggarwaaaaal/stainless-trial/compare/v1.0.0...v1.1.0)
+
+### Features
+
+* clean up environment call outs ([456cbcf](https://github.com/Jaiaggarwaaaaal/stainless-trial/commit/456cbcfeb98785aa74704a617fcad3fd9c66042c))
+
+
+### Bug Fixes
+
+* **client:** don't send Content-Type header on GET requests ([0f41dc8](https://github.com/Jaiaggarwaaaaal/stainless-trial/commit/0f41dc8fd62b27768069a1850ef250bb222e0c4a))
+
 ## 1.0.0 (2025-07-11)
 
 Full Changelog: [v0.0.1-alpha.0...v1.0.0](https://github.com/Jaiaggarwaaaaal/stainless-trial/compare/v0.0.1-alpha.0...v1.0.0)
