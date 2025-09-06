@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List, Iterable
+from typing import Iterable
 from typing_extensions import Literal
 
 import httpx
@@ -15,7 +15,8 @@ from ..types import (
     pet_upload_image_params,
     pet_find_by_status_params,
 )
-from .._types import NOT_GIVEN, Body, Query, Headers, NoneType, NotGiven, FileTypes
+from .._files import read_file_content, async_read_file_content
+from .._types import NOT_GIVEN, Body, Query, Headers, NoneType, NotGiven, FileContent, SequenceNotStr
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -59,7 +60,7 @@ class PetResource(SyncAPIResource):
         self,
         *,
         name: str,
-        photo_urls: List[str],
+        photo_urls: SequenceNotStr[str],
         id: int | NotGiven = NOT_GIVEN,
         category: CategoryParam | NotGiven = NOT_GIVEN,
         status: Literal["available", "pending", "sold"] | NotGiven = NOT_GIVEN,
@@ -139,7 +140,7 @@ class PetResource(SyncAPIResource):
         self,
         *,
         name: str,
-        photo_urls: List[str],
+        photo_urls: SequenceNotStr[str],
         id: int | NotGiven = NOT_GIVEN,
         category: CategoryParam | NotGiven = NOT_GIVEN,
         status: Literal["available", "pending", "sold"] | NotGiven = NOT_GIVEN,
@@ -256,7 +257,7 @@ class PetResource(SyncAPIResource):
     def find_by_tags(
         self,
         *,
-        tags: List[str] | NotGiven = NOT_GIVEN,
+        tags: SequenceNotStr[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -343,9 +344,9 @@ class PetResource(SyncAPIResource):
     def upload_image(
         self,
         pet_id: int,
+        image: FileContent,
         *,
         additional_metadata: str | NotGiven = NOT_GIVEN,
-        image: FileTypes | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -367,9 +368,10 @@ class PetResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        extra_headers = {"Content-Type": "application/octet-stream", **(extra_headers or {})}
         return self._post(
             f"/pet/{pet_id}/uploadImage",
-            body=maybe_transform(image, pet_upload_image_params.PetUploadImageParams),
+            body=read_file_content(image),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -407,7 +409,7 @@ class AsyncPetResource(AsyncAPIResource):
         self,
         *,
         name: str,
-        photo_urls: List[str],
+        photo_urls: SequenceNotStr[str],
         id: int | NotGiven = NOT_GIVEN,
         category: CategoryParam | NotGiven = NOT_GIVEN,
         status: Literal["available", "pending", "sold"] | NotGiven = NOT_GIVEN,
@@ -487,7 +489,7 @@ class AsyncPetResource(AsyncAPIResource):
         self,
         *,
         name: str,
-        photo_urls: List[str],
+        photo_urls: SequenceNotStr[str],
         id: int | NotGiven = NOT_GIVEN,
         category: CategoryParam | NotGiven = NOT_GIVEN,
         status: Literal["available", "pending", "sold"] | NotGiven = NOT_GIVEN,
@@ -604,7 +606,7 @@ class AsyncPetResource(AsyncAPIResource):
     async def find_by_tags(
         self,
         *,
-        tags: List[str] | NotGiven = NOT_GIVEN,
+        tags: SequenceNotStr[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -691,9 +693,9 @@ class AsyncPetResource(AsyncAPIResource):
     async def upload_image(
         self,
         pet_id: int,
+        image: FileContent,
         *,
         additional_metadata: str | NotGiven = NOT_GIVEN,
-        image: FileTypes | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -715,9 +717,10 @@ class AsyncPetResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        extra_headers = {"Content-Type": "application/octet-stream", **(extra_headers or {})}
         return await self._post(
             f"/pet/{pet_id}/uploadImage",
-            body=await async_maybe_transform(image, pet_upload_image_params.PetUploadImageParams),
+            body=await async_read_file_content(image),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
